@@ -27,7 +27,11 @@ let tasks = {
       {
         id: UID(),
         title: "New Todo added in this column its able to drag&drop",
-        comments: [],
+        comments: [ {
+            name: "new user name",
+            text: "Commend will update realtime open new webpage and check ",
+            id: UID(),
+          }],
       },
     ],
   },
@@ -38,9 +42,9 @@ let tasks = {
         id: UID(),
         title: "Check commends real time it works",
         comments: [
-          {
-            name: "David",
-            text: "Ensure you review before merging",
+         {
+            name: "new user name",
+            text: "Commend will update realtime open new webpage and check ",
             id: UID(),
           },
         ],
@@ -55,8 +59,8 @@ let tasks = {
         title: "Open new browser and see real time commend data",
         comments: [
           {
-            name: "Dima",
-            text: "Make sure you check the requirements",
+            name: "new user name",
+            text: "Commend will update realtime open new webpage and check ",
             id: UID(),
           },
         ],
