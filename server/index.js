@@ -8,7 +8,7 @@ const { Server } = require("socket.io");
 
 const socketIO = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,
@@ -27,11 +27,13 @@ let tasks = {
       {
         id: UID(),
         title: "New Todo added in this column its able to drag&drop",
-        comments: [ {
+        comments: [
+          {
             name: "new user name",
             text: "Commend will update realtime open new webpage and check ",
             id: UID(),
-          }],
+          },
+        ],
       },
     ],
   },
@@ -42,7 +44,7 @@ let tasks = {
         id: UID(),
         title: "Check commends real time it works",
         comments: [
-         {
+          {
             name: "new user name",
             text: "Commend will update realtime open new webpage and check ",
             id: UID(),
@@ -78,12 +80,8 @@ socketIO.on("connection", (socket) => {
 
   socket.on("createTask", (data) => {
     console.log(data);
-    // construct an object like the data struct
     const newTask = { id: UID(), title: data, comments: [] };
-    // add the task to the pending category
     tasks["pending"].items.push(newTask);
-
-    // fires the event for update
     socketIO.sockets.emit("tasks", tasks);
   });
 
@@ -117,7 +115,6 @@ socketIO.on("connection", (socket) => {
     const itemMoved = {
       ...tasks[source.droppableId].items[source.index],
     };
-    // console.log("ItemMoved>>> ", itemMoved);
     tasks[source.droppableId].items.splice(source.index, 1);
     tasks[destination.droppableId].items.splice(
       destination.index,
@@ -125,6 +122,23 @@ socketIO.on("connection", (socket) => {
       itemMoved
     );
     socketIO.sockets.emit("tasks", tasks);
+  });
+
+  socket.on("deleteTask", (data) => {
+    const { category, id } = data;
+    const taskItems = tasks[category].items;
+    tasks[category].items = taskItems.filter((task) => task.id !== id);
+    socketIO.sockets.emit("tasks", tasks);
+  });
+
+  socket.on("editTask", (data) => {
+    const { category, id, title } = data;
+    const taskItems = tasks[category].items;
+    const task = taskItems.find((task) => task.id === id);
+    if (task) {
+      task.title = title;
+      socketIO.sockets.emit("tasks", tasks);
+    }
   });
 
   socket.on("disconnect", () => {
